@@ -15,7 +15,7 @@ Currently, two official plugins are available:
     <!-- command prompt -->
     cd api
     venv\Scripts\activate
-    python app.py
+    python main.py
 ```
 
 # Run frontend
