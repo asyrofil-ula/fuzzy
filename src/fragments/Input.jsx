@@ -2,7 +2,7 @@
 
 /* eslint-disable react/prop-types */
 const Input = (props) => {
-  const { children, value, id, type, onChange } = props;
+  const { children, value, id, type, onChange, placeholder } = props;
   return (
     <>
       {/* <Label></Label> */}
@@ -10,7 +10,7 @@ const Input = (props) => {
         type={type}
         value={value}
         id={id}
-        placeholder="Type here"
+        placeholder={placeholder}
         className="input input-bordered input-info w-full max-w-xs"
         required
         onChange={onChange}

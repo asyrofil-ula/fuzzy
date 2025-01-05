@@ -4,7 +4,7 @@ import Input from "../fragments/Input";
 import Card from "../components/Card";
 import Chart from "../components/Chart";
 import Button from "../elements/Button";
-import Table from "../components/Table";
+// import Table from "../components/Table";
 import { useEffect, useState } from "react";
 import { prediksi, fuzzification } from "../services/fuzzy.services";
 
@@ -19,6 +19,7 @@ const debounce = (func, delay) => {
 const Home = () => {
   const [permintaan, setPermintaan] = useState(0);
   const [persediaan, setPersediaan] = useState(0);
+  const [err, setErr] = useState({ permintaan: false, persediaan: false });
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [fuzzyData, setFuzzyData] = useState(null);
   const [his, setHis] = useState(null);
@@ -28,11 +29,23 @@ const Home = () => {
   const [produksiData, setProduksiData] = useState(null);
 
   const handlePermintaan = debounce((value) => {
-    setPermintaan(Math.max(0, parseInt(value, 10) || 0));
+    const permValue = Math.max(0, parseInt(value, 10) || 0);
+    setPermintaan(permValue);
+    if (permValue < 1000 || permValue > 5000) {
+      setErr((prev) => ({ ...prev, permintaan: true }));
+    } else {
+      setErr((prev) => ({ ...prev, permintaan: false }));
+    }
   }, 300);
 
   const handlePersediaan = debounce((value) => {
-    setPersediaan(Math.max(0, parseInt(value, 10) || 0));
+    const persValue = Math.max(0, parseInt(value, 10) || 0);
+    setPersediaan(persValue);
+    if (persValue < 100 || persValue > 600) {
+      setErr((prev) => ({ ...prev, persediaan: true }));
+    } else {
+      setErr((prev) => ({ ...prev, persediaan: false }));
+    }
   }, 300);
 
   const submit = async () => {
@@ -112,6 +125,7 @@ const Home = () => {
   useEffect(() => {
     if (his) {
       const { derajat_keanggotaan } = his;
+      console.log(his.permintaan);
 
       if (derajat_keanggotaan?.him_permintaan) {
         const { rendah, sedang, banyak } = derajat_keanggotaan.him_permintaan;
@@ -122,7 +136,11 @@ const Home = () => {
             {
               label: "Him Permintaan",
               data: [rendah, sedang, banyak],
-              backgroundColor: ["rgba(209, 0, 0, 0.3)", "rgba(0, 209, 0, 0.3)", "rgba(0, 0, 209, 0.3)"],
+              backgroundColor: [
+                "rgba(209, 0, 0, 0.3)",
+                "rgba(0, 209, 0, 0.3)",
+                "rgba(0, 0, 209, 0.3)",
+              ],
               borderColor: "rgba(0, 0, 0, 0.3)",
             },
           ],
@@ -138,7 +156,11 @@ const Home = () => {
             {
               label: "Him Persediaan",
               data: [minim, sedang, banyak],
-              backgroundColor: ["rgba(128, 0, 128, 0.3)", "rgba(255, 165, 0, 0.3)", "rgba(0, 255, 255, 0.3)"],
+              backgroundColor: [
+                "rgba(128, 0, 128, 0.3)",
+                "rgba(255, 165, 0, 0.3)",
+                "rgba(0, 255, 255, 0.3)",
+              ],
               borderColor: "rgba(0, 0, 0, 0.3)",
             },
           ],
@@ -149,35 +171,67 @@ const Home = () => {
 
   return (
     <>
-      <Card>
-        <Label>Masukkan Permintaan</Label>
-        <Input
-          type="number"
-          id="permintaan"
-          onChange={(e) => handlePermintaan(e.target.value)}
-        />
-        <Label>Masukkan Jumlah Persediaan</Label>
-        <Input
-          type="number"
-          id="persediaan"
-          onChange={(e) => handlePersediaan(e.target.value)}
-        />
-        <Button
-          type="submit"
-          role="submit"
-          classname="btn btn-primary text-white"
-          onClick={submit}
-        >
-          Prediksi
-        </Button>
-
+      <Card title="Prediksi Produksi product">
+        
+          <Label>Masukkan Permintaan (1000 - 5000)</Label>
+          <Input
+            type="number"
+            placeholder="Masukkan permintaan"
+            id="permintaan"
+            onChange={(e) => handlePermintaan(e.target.value)}
+          />
+          {err.permintaan && (
+            <p style={{ color: "red" }}>
+              Permintaan harus diantara 1000 - 5000
+            </p>
+          )}
+          <Label>Masukkan Jumlah Persediaan (100 - 600)</Label>
+          <Input
+            type="number"
+            placeholder="Masukkan persediaan"
+            id="persediaan"
+            onChange={(e) => handlePersediaan(e.target.value)}
+          />
+          {err.persediaan && (
+            <p style={{ color: "red" }}>Persediaan harus diantara 100 - 600</p>
+          )}
+          <Button
+            type="submit"
+            role="submit"
+            classname="btn btn-primary text-white"
+            onClick={submit}
+            disabled={!!err.permintaan || !!err.persediaan}
+          >
+            Prediksi
+          </Button>
         <Modal title="Prediksi" onClick={closeModal} isOpen={isOpenModal}>
-          {permintaanData && <Chart data={permintaanData} />}
-          {persediaanData && <Chart data={persediaanData} />}
-          {produksiData && <Chart data={produksiData} />}
-          <p>Hasil Prediksi</p>
-          {his && <p>{his.produksi}</p>}
-          <Table></Table>
+          {permintaanData && (
+            <Chart
+              data={permintaanData}
+              options={{ responsive: true }}
+              input={his?.permintaan || 0}
+              maxMembership={
+                his?.derajat_keanggotaan?.him_permintaan?.max_membership || 0
+              }
+            />
+          )}
+          {persediaanData && (
+            <Chart
+              data={persediaanData}
+              options={{ responsive: true }}
+              input={his?.persediaan || 0}
+              maxMembership={
+                his?.derajat_keanggotaan?.him_persediaan?.max_membership || 0
+              }
+            />
+          )}
+          {produksiData && (
+            <Chart data={produksiData} options={{ responsive: true }} />
+          )}
+          <>
+            <p>Hasil Prediksi Produksi</p>
+            {his && <p>{his.produksi}</p>}
+          </>
         </Modal>
       </Card>
     </>

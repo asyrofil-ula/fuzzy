@@ -32,11 +32,15 @@ def hitung_produksi(permintaan_input, persediaan_input):
     mu_perm_rendah = fuzz.interp_membership(permintaan, permintaan_rendah, permintaan_input)
     mu_perm_sedang = fuzz.interp_membership(permintaan, permintaan_sedang, permintaan_input)
     mu_perm_banyak = fuzz.interp_membership(permintaan, permintaan_banyak, permintaan_input)
+    
+    max_mu_perm = max(mu_perm_rendah, mu_perm_sedang, mu_perm_banyak)
 
     mu_pers_minim = fuzz.interp_membership(persediaan, persediaan_minim, persediaan_input)
     mu_pers_sedang = fuzz.interp_membership(persediaan, persediaan_sedang, persediaan_input)
     mu_pers_banyak = fuzz.interp_membership(persediaan, persediaan_banyak, persediaan_input)
 
+    max_mu_pers = max(mu_pers_minim, mu_pers_sedang, mu_pers_banyak)
+    
     # Aturan fuzzy dengan metode Tsukamoto
     alpha1 = min(mu_perm_rendah, mu_pers_minim)
     z1 = fuzz.defuzz(produksi, produksi_kecil, 'centroid')
@@ -80,12 +84,14 @@ def hitung_produksi(permintaan_input, persediaan_input):
         'him_permintaan': {
             'rendah': mu_perm_rendah,
             'sedang': mu_perm_sedang,
-            'banyak': mu_perm_banyak
+            'banyak': mu_perm_banyak,
+            'max_membership': max_mu_perm
         },
         'him_persediaan': {
             'minim': mu_pers_minim,
             'sedang': mu_pers_sedang,
-            'banyak': mu_pers_banyak
+            'banyak': mu_pers_banyak,
+            'max_membership': max_mu_pers
         },
         'alpha_rules': {
             'R1': alpha1, 'R2': alpha2, 'R3': alpha3,
