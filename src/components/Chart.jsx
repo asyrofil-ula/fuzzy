@@ -23,8 +23,7 @@ ChartJS.register(
   annotationPlugin
 );
 
-const Chart = ({ data, input, maxMembership }) => {
- 
+const Chart = ({ data,  maxMembership }) => {
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -41,19 +40,19 @@ const Chart = ({ data, input, maxMembership }) => {
       },
       annotation: {
         annotations: {
-          line1: {
-            type: "line",
-            xMin: input,
-            xMax: input,
-            borderColor: "black",
-            borderWidth: 2,
-            borderDash: [5, 5],
-            label: {
-              enabled: true,
-              content: `Input Permintaan: ${input}`,
-              position: "top",
-            },
-          },
+          // line1: {
+          //   type: "line",
+          //   xMin: input,
+          //   xMax: input,
+          //   borderColor: "black",
+          //   borderWidth: 2,
+          //   borderDash: [5, 5],
+          //   label: {
+          //     enabled: true,
+          //     content: `Input Permintaan: ${input}`,
+          //     position: "top",
+          //   },
+          // },
           line2: {
             type: "line",
             yMin: maxMembership,
@@ -74,7 +73,7 @@ const Chart = ({ data, input, maxMembership }) => {
       x: {
         title: {
           display: true,
-          // text: "Permintaan / Persediaan",
+          text: "Permintaan / Persediaan",
         },
       },
       y: {
@@ -86,13 +85,12 @@ const Chart = ({ data, input, maxMembership }) => {
         max: 1,
       },
     },
-    // elements: {
-    //   line: {
-    //     tension: 0, // no smoothing
-    //   },
-    // },
+    elements: {
+      line: {
+        tension: 0, // no smoothing
+      },
+    },
   };
-  
 
   return <Line data={data} options={chartOptions} />;
 };

@@ -12,7 +12,7 @@ export default {
     require('daisyui'),
   ],
   daisyui: {
-    themes: ["light", "cupcake"],
+    themes: ["light", "pcake"],
   },
 }
 

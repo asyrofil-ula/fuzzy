@@ -71,10 +71,7 @@ def hitung_produksi(permintaan_input, persediaan_input):
 
     # Agregasi output
     total_alpha = alpha1 + alpha2 + alpha3 + alpha4 + alpha5 + alpha6 + alpha7 + alpha8 + alpha9
-    if total_alpha == 0:
-        z_aggregated = 0  # Nilai fallback jika tidak ada aturan yang aktif
-    else:
-        z_aggregated = (
+    z_aggregated = (
             alpha1 * z1 + alpha2 * z2 + alpha3 * z3 +
             alpha4 * z4 + alpha5 * z5 + alpha6 * z6 +
             alpha7 * z7 + alpha8 * z8 + alpha9 * z9
@@ -100,7 +97,7 @@ def hitung_produksi(permintaan_input, persediaan_input):
             'z1': z1, 'z2': z2, 'z3': z3,
             'z4': z4, 'z5': z5, 'z6': z6,
             'z7': z7, 'z8': z8, 'z9': z9
-        },
+            },
     }
 
 
