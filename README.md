@@ -15,6 +15,7 @@ Currently, two official plugins are available:
     <!-- command prompt -->
     cd api
     venv\Scripts\activate
+    pip install -r requirements.txt
     python main.py
 ```
 
