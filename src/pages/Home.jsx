@@ -50,6 +50,7 @@ const Home = () => {
       const response = await prediksi({ permintaan, persediaan });
       if (response.status === 200) {
         setHis(response.data);
+        // console.log(response.data);
         openModal();
       } else {
         alert("Terjadi kesalahan saat memproses permintaan." + response.error);
@@ -193,18 +194,27 @@ const Home = () => {
           {permintaanData && (
             <Chart
               data={permintaanData}
-              // input={permintaan}
               maxMembership={
-                his?.derajat_keanggotaan?.him_permintaan?.max_membership || 0
+                his?.derajat_keanggotaan?.him_permintaan?.banyak || 0
               }
+              rendah={his?.derajat_keanggotaan?.him_permintaan?.rendah || 0}
+              sedang={his?.derajat_keanggotaan?.him_permintaan?.sedang || 0}
             />
           )}
+
           {persediaanData && (
             <Chart
               data={persediaanData}
               // input={persediaan}
               maxMembership={
-                his?.derajat_keanggotaan?.him_persediaan?.max_membership || 0
+                his?.derajat_keanggotaan?.him_persediaan?.banyak || 0
+              }
+              sedang={
+                his?.derajat_keanggotaan?.him_persediaan?.sedang ||
+                0
+              }
+              rendah={
+                his?.derajat_keanggotaan?.him_persediaan?.minim || 0
               }
             />
           )}
@@ -219,8 +229,6 @@ const Home = () => {
                     <tr>
                       <th>Rule</th>
                       <th>Value</th>
-                      <th>z</th>
-                      <th>value</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -229,7 +237,6 @@ const Home = () => {
                         <tr key={rule}>
                           <td>{`${rule}`}</td>
                           <td>{`${value}`}</td>
-                          
                         </tr>
                       )
                     )}

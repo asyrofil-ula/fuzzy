@@ -23,7 +23,7 @@ ChartJS.register(
   annotationPlugin
 );
 
-const Chart = ({ data,  maxMembership }) => {
+const Chart = ({ data,  maxMembership, rendah, sedang }) => {
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -40,20 +40,7 @@ const Chart = ({ data,  maxMembership }) => {
       },
       annotation: {
         annotations: {
-          // line1: {
-          //   type: "line",
-          //   xMin: input,
-          //   xMax: input,
-          //   borderColor: "black",
-          //   borderWidth: 2,
-          //   borderDash: [5, 5],
-          //   label: {
-          //     enabled: true,
-          //     content: `Input Permintaan: ${input}`,
-          //     position: "top",
-          //   },
-          // },
-          line2: {
+          maxLine: {
             type: "line",
             yMin: maxMembership,
             yMax: maxMembership,
@@ -62,10 +49,36 @@ const Chart = ({ data,  maxMembership }) => {
             borderDash: [5, 5],
             label: {
               enabled: true,
-              content: `Max Membership: ${maxMembership}`,
+              content: `Max Membership: [${maxMembership}]`,
               position: "end",
             },
           },
+          minLine: {
+            type: "line",
+            yMin: rendah,
+            yMax: rendah,
+            borderColor: "orange",
+            borderWidth: 2,
+            borderDash: [10, 5],
+            label: {
+              enabled: true,
+              content: `Min Membership: [${rendah}]`,
+              position: "start",
+            },
+          },
+          avgLine: {
+            type: "line",
+            yMin: sedang,
+            yMax: sedang,
+            borderColor: "orange",
+            borderWidth: 2,
+            borderDash: [2, 2],
+            label: {
+              enabled: true,
+              content: `Average Membership: [${sedang}]`,
+              position: "center",
+            },
+          },         
         },
       },
     },
