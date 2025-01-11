@@ -26,6 +26,7 @@ const Home = () => {
 
   const [permintaanData, setPermintaanData] = useState(null);
   const [persediaanData, setPersediaanData] = useState(null);
+  const [produksiData, setProduksiData] = useState(null);
 
   const handlePermintaan = debounce((value) => {
     const permValue = Math.max(0, parseInt(value, 10) || 0);
@@ -156,13 +157,46 @@ const Home = () => {
         });
       }
       setPersediaanData(persediaanChartData);
+
+      const produksiChartData = createChartData(
+        fuzzyData.produksi.range,
+        {
+          label: "Rendah",
+          data: fuzzyData.produksi.kecil,
+          color: "rgba(255, 99, 132, 0.6)",
+        },
+        {
+          label: "Sedang",
+          data: fuzzyData.produksi.sedang,
+          color: "rgba(75, 192, 192, 0.6)",
+        },
+        {
+          label: "Banyak",
+          data: fuzzyData.produksi.besar,
+          color: "rgba(54, 162, 235, 0.6)",
+        }
+      );
+      // console.log(fuzzyData);
+      if (his) {
+        produksiChartData.datasets.push({
+          label: "Output Produksi",
+          data: fuzzyData.produksi.range.map((x) =>
+            x === his.produksi ? 1 : 0
+          ),
+          borderColor: "rgba(0, 0, 0, 0.39)",
+          borderWidth: 2,
+          borderDash: [5, 5],
+        });
+      }
+      // console.log(his)
+      setProduksiData(produksiChartData);
     }
-  }, [fuzzyData, permintaan, persediaan]);
+  }, [fuzzyData, permintaan, persediaan,his]);
 
   return (
     <>
       <Card title="Prediksi Produksi Product">
-        <Label>Masukkan Permintaan (1000 - 5000)</Label>
+        <Label>Permintaan (1000 - 5000)</Label>
         <Input
           type="number"
           placeholder="Masukkan permintaan"
@@ -171,7 +205,7 @@ const Home = () => {
         {err.permintaan && (
           <p style={{ color: "red" }}>Permintaan harus diantara 1000 - 5000</p>
         )}
-        <Label>Masukkan Jumlah Persediaan (100 - 600)</Label>
+        <Label>Persediaan (100 - 600)</Label>
         <Input
           type="number"
           placeholder="Masukkan persediaan"
@@ -201,7 +235,6 @@ const Home = () => {
               sedang={his?.derajat_keanggotaan?.him_permintaan?.sedang || 0}
             />
           )}
-
           {persediaanData && (
             <Chart
               data={persediaanData}
@@ -216,6 +249,16 @@ const Home = () => {
               rendah={
                 his?.derajat_keanggotaan?.him_persediaan?.minim || 0
               }
+            />
+          )}
+          {produksiData && (
+            <Chart
+              data={produksiData}
+              maxMembership={
+                his?.derajat_keanggotaan?.him_produksi?.besar || 0
+              }
+              rendah={his?.derajat_keanggotaan?.him_produksi?.kecil || 0}
+              sedang={his?.derajat_keanggotaan?.him_produksi?.sedang || 0}
             />
           )}
           {his && (
