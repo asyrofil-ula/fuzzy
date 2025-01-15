@@ -2,7 +2,7 @@
 const Label = (props) => {
   const { children, htmlFor } = props;
   return (
-    <label htmlFor={htmlFor} className="label label-text font-bold">
+    <label htmlFor={htmlFor} className="block text-sm font-bold text-gray-700 mb-2">
       {children}
     </label>
   );

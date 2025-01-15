@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import numpy as np
 import skfuzzy as fuzz
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -36,6 +36,7 @@ def hitung_produksi(permintaan_input, persediaan_input):
     mu_pers_minim = fuzz.interp_membership(persediaan, persediaan_minim, persediaan_input)
     mu_pers_sedang = fuzz.interp_membership(persediaan, persediaan_sedang, persediaan_input)
     mu_pers_banyak = fuzz.interp_membership(persediaan, persediaan_banyak, persediaan_input)
+    
 
     # Fungsi menghitung z berdasarkan alpha dan jenis produksi
     def calculate_z(alpha, jenis):
@@ -123,12 +124,20 @@ def prediksi():
 
     produksi, derajat_keanggotaan = hitung_produksi(permintaan_input, persediaan_input)
     
+    # mu_pro_kecil = fuzz.interp_membership(produksi, produksi_kecil, produksi)
+    # mu_pro_sedang = fuzz.interp_membership(produksi, produksi_sedang, produksi)
+    # mu_pro_besar = fuzz.interp_membership(produksi, produksi_besar, produksi)
     
     return jsonify({
         'permintaan' : permintaan_input,
         'persediaan' : persediaan_input,
         'produksi': round(produksi),
         'derajat_keanggotaan': derajat_keanggotaan,
+        # 'him_produksi' : {
+        #     'kecil': mu_pro_kecil,
+        #     'sedang': mu_pro_sedang,
+        #     'besar': mu_pro_besar
+        # }
         # 'data_chart': data_chart        
         })
 

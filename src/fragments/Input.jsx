@@ -11,7 +11,7 @@ const Input = (props) => {
         value={value}
         id={id}
         placeholder={placeholder}
-        className="input input-bordered input-accent w-full max-w-xs"
+        className="input input-bordered w-full max-w-xs rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-accent focus:outline-none transition"
         required
         onChange={onChange}
       >

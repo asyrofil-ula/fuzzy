@@ -48,10 +48,16 @@ const Home = () => {
 
   const submit = async () => {
     try {
+      // Fetch fuzzy data
+      if (!fuzzyData) {
+        const response = await fuzzification();
+        setFuzzyData(response.data);
+      }
+  
+      // Perform prediction
       const response = await prediksi({ permintaan, persediaan });
       if (response.status === 200) {
         setHis(response.data);
-        // console.log(response.data);
         openModal();
       } else {
         alert("Terjadi kesalahan saat memproses permintaan." + response.error);
@@ -62,6 +68,7 @@ const Home = () => {
       alert("Terjadi kesalahan saat memproses permintaan.");
     }
   };
+  
 
   const openModal = () => {
     setIsOpenModal(true);
@@ -80,18 +87,6 @@ const Home = () => {
       borderColor: dataset.color,
     })),
   });
-
-  useEffect(() => {
-    const fetchFuzzyData = async () => {
-      try {
-        const response = await fuzzification();
-        setFuzzyData(response.data);
-      } catch (error) {
-        console.error("Error fetching fuzzy data:", error);
-      }
-    };
-    fetchFuzzyData();
-  }, []);
 
   useEffect(() => {
     if (fuzzyData) {
@@ -196,6 +191,7 @@ const Home = () => {
   return (
     <>
       <Card title="Prediksi Produksi Product">
+        <div className="mb-4">
         <Label>Permintaan (1000 - 5000)</Label>
         <Input
           type="number"
@@ -205,6 +201,8 @@ const Home = () => {
         {err.permintaan && (
           <p style={{ color: "red" }}>Permintaan harus diantara 1000 - 5000</p>
         )}
+        </div>
+        <div className="mb-4">
         <Label>Persediaan (100 - 600)</Label>
         <Input
           type="number"
@@ -214,9 +212,11 @@ const Home = () => {
         {err.persediaan && (
           <p style={{ color: "red" }}>Persediaan harus diantara 100 - 600</p>
         )}
+        </div>
+        <div className="mt-6 text-center">
         <Button
           type="submit"
-          classname="btn btn-primary text-white"
+          classname="btn w-full bg-accent text-white font-bold py-2 px-4 rounded-md hover:bg-accent-hover transition disabled:bg-gray-300 disabled:cursor-not-allowed"
           onClick={submit}
           disabled={
             err.permintaan || err.persediaan || !permintaan || !persediaan
@@ -224,6 +224,7 @@ const Home = () => {
         >
           Prediksi
         </Button>
+        </div>
         <Modal title="Prediksi" onClick={closeModal} isOpen={isOpenModal}>
           {permintaanData && (
             <Chart
@@ -264,28 +265,6 @@ const Home = () => {
           {his && (
             <>
               <span>Hasil Prediksi Produksi: {his.produksi}</span>
-              {/* <Rules/> */}
-              <div className="overflow-x-auto text-center">
-                <table className="table-zebra text-center">
-                  <caption className="font-bold">Table Rule</caption>
-                  <thead>
-                    <tr>
-                      <th>Rule</th>
-                      <th>Value</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.entries(his.derajat_keanggotaan.alpha_rules).map(
-                      ([rule, value]) => (
-                        <tr key={rule}>
-                          <td>{`${rule}`}</td>
-                          <td>{`${value}`}</td>
-                        </tr>
-                      )
-                    )}
-                  </tbody>
-                </table>
-              </div>
             </>
           )}
         </Modal>

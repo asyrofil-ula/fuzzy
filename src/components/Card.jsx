@@ -2,10 +2,10 @@
 const Card = (props) => {
   const { children, title } = props;
   return (
-    <div className="flex justify-center">
-      <div className="card justify-center w-96 bg-gray-100 shadow-xl gap-2 border border-gray-300">
-        <div className="card-body">
-          <h1 className="card-title text-center text-xl font-bold text-gray-800">
+    <div className="flex justify-center items-center h-screen">
+      <div className="card w-96 bg-white shadow-lg rounded-lg border border-gray-300 p-6">
+        <div className="card-body text-center">
+          <h1 className="card-title text-2xl font-extrabold text-gray-800">
             {title}
           </h1>
         </div>
