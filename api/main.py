@@ -25,7 +25,7 @@ produksi_sedang = fuzz.trimf(produksi, [1000, 3500, 5000])
 produksi_besar = fuzz.trimf(produksi, [4000, 7000, 7000])
 produksi_tidak = fuzz.trimf(produksi, [0, 0, 0])
 
-print(permintaan_rendah)
+# print(permintaan_rendah)
 
 def hitung_produksi(permintaan_input, persediaan_input):
     # Hitung derajat keanggotaan
