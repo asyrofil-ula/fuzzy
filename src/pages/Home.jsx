@@ -4,47 +4,34 @@ import Input from "../fragments/Input";
 import Card from "../components/Card";
 import Chart from "../components/Chart";
 import Button from "../elements/Button";
-// import Rules from "../components/Rules";
+import BarChart from "../components/BarChart";
 import { useEffect, useState } from "react";
+// import Bar from ;
+
 import { prediksi, fuzzification } from "../services/fuzzy.services";
-
-const debounce = (func, delay) => {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => func(...args), delay);
-  };
-};
-
+// import BarChart from "../elements/Barchart";
 const Home = () => {
   const [permintaan, setPermintaan] = useState(0);
   const [persediaan, setPersediaan] = useState(0);
-  const [err, setErr] = useState({ permintaan: false, persediaan: false });
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [fuzzyData, setFuzzyData] = useState(null);
   const [his, setHis] = useState(null);
 
   const [permintaanData, setPermintaanData] = useState(null);
   const [persediaanData, setPersediaanData] = useState(null);
-  const [produksiData, setProduksiData] = useState(null);
+  // const [produksiData, setProduksiData] = useState(null);
 
-  const handlePermintaan = debounce((value) => {
-    const permValue = Math.max(0, parseInt(value, 10) || 0);
+  const handlePermintaan = (value) => {
+    const permValue = parseInt(value)
     setPermintaan(permValue);
-    setErr((prev) => ({
-      ...prev,
-      permintaan: permValue < 1000 || permValue > 5000,
-    }));
-  }, 300);
+    console.log(permValue);
+  };
 
-  const handlePersediaan = debounce((value) => {
-    const persValue = Math.max(0, parseInt(value, 10) || 0);
+  const handlePersediaan = (value) => {
+    const persValue = parseInt(value)
     setPersediaan(persValue);
-    setErr((prev) => ({
-      ...prev,
-      persediaan: persValue < 100 || persValue > 600,
-    }));
-  }, 300);
+    console.log(persValue);
+  };
 
   const submit = async () => {
     try {
@@ -52,12 +39,14 @@ const Home = () => {
       if (!fuzzyData) {
         const response = await fuzzification();
         setFuzzyData(response.data);
+        // console.log(response.data);
       }
   
       // Perform prediction
       const response = await prediksi({ permintaan, persediaan });
       if (response.status === 200) {
         setHis(response.data);
+        // console.log(response.data)
         openModal();
       } else {
         alert("Terjadi kesalahan saat memproses permintaan." + response.error);
@@ -79,16 +68,37 @@ const Home = () => {
     setIsOpenModal(false);
   };
 
-  const createChartData = (range, ...datasets) => ({
+  const createChartData = (range,  ...datasets) => ({
     labels: range,
-    datasets: datasets.map((dataset) => ({
-      label: dataset.label,
-      data: dataset.data,
-      borderColor: dataset.color,
-    })),
+    datasets: [
+      ...datasets.map((dataset) => ({
+        label: dataset.label,
+        data: dataset.data,
+        borderColor: dataset.color,
+        borderWidth: 2,
+        fill: false,
+      })),
+      // Tambahkan garis input sebagai dataset tambaha
+    ],
   });
-
-  useEffect(() => {
+  const barChart = {
+    labels: ['0', '10', '25', '40'],
+    datasets: [
+      {
+        label: "μ(Jumlah Produksi)",
+        data: [
+          his?.him_produksi?.fproduksi_tidak || 0,
+          his?.him_produksi?.fproduksi_kecil || 0,
+          his?.him_produksi?.fproduksi_sedang || 0,
+          his?.him_produksi?.fproduksi_tinggi || 0,
+        ],
+        backgroundColor: "black", // Warna batang vertikal
+        barThickness: 4, // Ketebalan batang
+      },
+    ],
+  };
+  
+useEffect(() => {
     if (fuzzyData) {
       const permintaanChartData = createChartData(
         fuzzyData.permintaan.range,
@@ -110,10 +120,9 @@ const Home = () => {
       );
       if (permintaan) {
         permintaanChartData.datasets.push({
+          type: "bar",
           label: "Input Permintaan",
-          data: fuzzyData.permintaan.range.map((x) =>
-            x === permintaan ? 1 : 0
-          ),
+          data: fuzzyData.permintaan.range.map((x) => (x === permintaan ? 1 : 0)),
           borderColor: "rgba(0, 0, 0, 0.39)",
           borderWidth: 2,
           borderDash: [5, 5],
@@ -141,7 +150,9 @@ const Home = () => {
         }
       );
       if (persediaan) {
+        
         persediaanChartData.datasets.push({
+          type: "bar",
           label: "Input Persediaan",
           data: fuzzyData.persediaan.range.map((x) =>
             x === persediaan ? 1 : 0
@@ -152,88 +163,50 @@ const Home = () => {
         });
       }
       setPersediaanData(persediaanChartData);
-
-      const produksiChartData = createChartData(
-        fuzzyData.produksi.range,
-        {
-          label: "Rendah",
-          data: fuzzyData.produksi.kecil,
-          color: "rgba(255, 99, 132, 0.6)",
-        },
-        {
-          label: "Sedang",
-          data: fuzzyData.produksi.sedang,
-          color: "rgba(75, 192, 192, 0.6)",
-        },
-        {
-          label: "Banyak",
-          data: fuzzyData.produksi.besar,
-          color: "rgba(54, 162, 235, 0.6)",
-        }
-      );
-      // console.log(fuzzyData);
-      if (his) {
-        produksiChartData.datasets.push({
-          label: "Output Produksi",
-          data: fuzzyData.produksi.range.map((x) =>
-            x === his.produksi ? 1 : 0
-          ),
-          borderColor: "rgba(0, 0, 0, 0.39)",
-          borderWidth: 2,
-          borderDash: [5, 5],
-        });
-      }
-      // console.log(his)
-      setProduksiData(produksiChartData);
+      
     }
+
   }, [fuzzyData, permintaan, persediaan,his]);
+
 
   return (
     <>
       <Card title="Prediksi Produksi Product">
         <div className="mb-4">
-        <Label>Permintaan (1000 - 5000)</Label>
+        <Label>Permintaan</Label>
         <Input
           type="number"
           placeholder="Masukkan permintaan"
           onChange={(e) => handlePermintaan(e.target.value)}
         />
-        {err.permintaan && (
-          <p style={{ color: "red" }}>Permintaan harus diantara 1000 - 5000</p>
-        )}
         </div>
         <div className="mb-4">
-        <Label>Persediaan (100 - 600)</Label>
+        <Label>Persediaan</Label>
         <Input
           type="number"
           placeholder="Masukkan persediaan"
           onChange={(e) => handlePersediaan(e.target.value)}
         />
-        {err.persediaan && (
-          <p style={{ color: "red" }}>Persediaan harus diantara 100 - 600</p>
-        )}
         </div>
         <div className="mt-6 text-center">
         <Button
           type="submit"
           classname="btn w-full bg-accent text-white font-bold py-2 px-4 rounded-md hover:bg-accent-hover transition disabled:bg-gray-300 disabled:cursor-not-allowed"
           onClick={submit}
-          disabled={
-            err.permintaan || err.persediaan || !permintaan || !persediaan
-          }
         >
           Prediksi
         </Button>
+        {/* <BarChart></BarChart> */}
         </div>
         <Modal title="Prediksi" onClick={closeModal} isOpen={isOpenModal}>
           {permintaanData && (
             <Chart
               data={permintaanData}
               maxMembership={
-                his?.derajat_keanggotaan?.him_permintaan?.banyak || 0
+                his?.him_permintaan?.banyak || 0
               }
-              rendah={his?.derajat_keanggotaan?.him_permintaan?.rendah || 0}
-              sedang={his?.derajat_keanggotaan?.him_permintaan?.sedang || 0}
+              rendah={his?.him_permintaan?.rendah || 0}
+              sedang={his?.him_permintaan?.sedang || 0}
             />
           )}
           {persediaanData && (
@@ -241,27 +214,18 @@ const Home = () => {
               data={persediaanData}
               // input={persediaan}
               maxMembership={
-                his?.derajat_keanggotaan?.him_persediaan?.banyak || 0
+                his?.him_persediaan?.banyak || 0
               }
               sedang={
-                his?.derajat_keanggotaan?.him_persediaan?.sedang ||
+                his?.him_persediaan?.sedang ||
                 0
               }
               rendah={
-                his?.derajat_keanggotaan?.him_persediaan?.minim || 0
+                his?.him_persediaan?.minim || 0
               }
             />
           )}
-          {produksiData && (
-            <Chart
-              data={produksiData}
-              maxMembership={
-                his?.derajat_keanggotaan?.him_produksi?.besar || 0
-              }
-              rendah={his?.derajat_keanggotaan?.him_produksi?.kecil || 0}
-              sedang={his?.derajat_keanggotaan?.him_produksi?.sedang || 0}
-            />
-          )}
+          <BarChart barChart={barChart}></BarChart>
           {his && (
             <>
               <span>Hasil Prediksi Produksi: {his.produksi}</span>

@@ -23,7 +23,7 @@ ChartJS.register(
   annotationPlugin
 );
 
-const Chart = ({ data,  maxMembership, rendah, sedang }) => {
+const Chart = ({ data, maxMembership, rendah, sedang }) => {
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -44,10 +44,11 @@ const Chart = ({ data,  maxMembership, rendah, sedang }) => {
             type: "line",
             yMin: maxMembership,
             yMax: maxMembership,
-            borderColor: "orange",
+            borderColor: "red",
             borderWidth: 2,
             borderDash: [5, 5],
             label: {
+              // title: "Max Membership",
               enabled: true,
               content: `Max Membership: [${maxMembership}]`,
               position: "end",
@@ -57,9 +58,9 @@ const Chart = ({ data,  maxMembership, rendah, sedang }) => {
             type: "line",
             yMin: rendah,
             yMax: rendah,
-            borderColor: "orange",
+            borderColor: "green",
             borderWidth: 2,
-            borderDash: [10, 5],
+            borderDash: [5, 5],
             label: {
               enabled: true,
               content: `Min Membership: [${rendah}]`,
@@ -70,24 +71,26 @@ const Chart = ({ data,  maxMembership, rendah, sedang }) => {
             type: "line",
             yMin: sedang,
             yMax: sedang,
-            borderColor: "orange",
+            borderColor: "blue",
             borderWidth: 2,
-            borderDash: [2, 2],
+            borderDash: [5, 5],
             label: {
               enabled: true,
               content: `Average Membership: [${sedang}]`,
               position: "center",
             },
-          },         
+          },
         },
       },
     },
     scales: {
       x: {
+        type: "category",
         title: {
           display: true,
           text: "Permintaan / Persediaan",
         },
+        
       },
       y: {
         title: {
@@ -101,6 +104,9 @@ const Chart = ({ data,  maxMembership, rendah, sedang }) => {
     elements: {
       line: {
         tension: 0, // no smoothing
+      },
+      point: {
+        radius: 0, // hide data points
       },
     },
   };

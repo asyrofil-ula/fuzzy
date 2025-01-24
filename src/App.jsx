@@ -5,6 +5,7 @@ import "./App.css";
 // import ReactDOM from "react-dom/client"
 import { BrowserRouter, Routes, Route} from "react-router-dom";
 import Home from "./pages/Home";
+// import Tes from "./pages/Tes";
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route index element={<Home/>}/>
+        {/* <Route path="/tes" element={<Tes/>}/> */}
       </Routes>
     </BrowserRouter>
   );
