@@ -157,58 +157,16 @@ def prediksi():
     fproduksi_besar = fproduksi_besar_r7
 
     # Defuzzifikasi
-    if fproduksi_tidak > 0 and fproduksi_kecil > 0 and fproduksi_sedang > 0 and fproduksi_besar > 0:
-        numerator = (
-            (0 * fproduksi_tidak) +
-            (10 * fproduksi_kecil) +
-            (25 * fproduksi_sedang) +
-            (40 * fproduksi_besar)
+
+    numerator = (
+        (0 * fproduksi_tidak) +
+        (10 * fproduksi_kecil) +
+        (25 * fproduksi_sedang) +
+        (40 * fproduksi_besar)
         )
-        denominator = (fproduksi_tidak + fproduksi_kecil + fproduksi_sedang + fproduksi_besar)
-        x = numerator / denominator if denominator != 0 else 0
-    elif fproduksi_tidak > 0 and fproduksi_kecil > 0 and fproduksi_sedang > 0:
-        numerator = ((0 * fproduksi_tidak) + (10 * fproduksi_kecil) + (25 * fproduksi_sedang))
-        denominator = (fproduksi_tidak + fproduksi_kecil + fproduksi_sedang)
-        x = numerator / denominator if denominator != 0 else 0
-    elif fproduksi_kecil > 0 and fproduksi_sedang > 0 and fproduksi_besar > 0:
-        numerator = ((10 * fproduksi_kecil) + (25 * fproduksi_sedang) + (40 * fproduksi_besar))
-        denominator = (fproduksi_kecil + fproduksi_sedang + fproduksi_besar)
-        x = numerator / denominator if denominator != 0 else 0
-    elif fproduksi_tidak > 0 and fproduksi_kecil > 0 and fproduksi_besar > 0:
-        numerator = (0 * fproduksi_tidak) + (10 * fproduksi_kecil) + (40 * fproduksi_besar)
-        denominator = fproduksi_tidak + fproduksi_kecil + fproduksi_besar
-        x = numerator / denominator if denominator != 0 else 0
-    elif fproduksi_tidak > 0 and fproduksi_sedang > 0 and fproduksi_besar > 0:
-        numerator = (0 * fproduksi_tidak) + (25 * fproduksi_sedang) + (40 * fproduksi_besar)
-        denominator = fproduksi_tidak + fproduksi_sedang + fproduksi_besar
-        x = numerator / denominator if denominator != 0 else 0
-    elif fproduksi_tidak > 0 and fproduksi_sedang > 0:
-        numerator = (0 * fproduksi_tidak) + (25 * fproduksi_sedang)
-        denominator = fproduksi_tidak + fproduksi_sedang
-        x = numerator / denominator if denominator != 0 else 0
-    elif fproduksi_kecil > 0 and fproduksi_besar > 0:
-        numerator = (10 * fproduksi_kecil) + (40 * fproduksi_besar)
-        denominator = fproduksi_kecil + fproduksi_besar
-        x = numerator / denominator if denominator != 0 else 0
-    elif fproduksi_tidak > 0 and fproduksi_kecil > 0:
-        x = 10 / ((fproduksi_tidak / fproduksi_kecil) + 1)
-    elif fproduksi_kecil > 0 and fproduksi_sedang > 0:
-        x = 10 + 10 / ((fproduksi_kecil / fproduksi_sedang) + 1)
-    elif fproduksi_sedang > 0 and fproduksi_besar > 0:
-        x = 25 + 15 / ((fproduksi_sedang / fproduksi_besar) + 1)
-    elif fproduksi_tidak > 0 and fproduksi_sedang > 0:
-        x = 10 / ((fproduksi_tidak / fproduksi_sedang) + 1)
-    else:
-        if fproduksi_tidak > 0:
-            x = 0
-        elif fproduksi_kecil > 0:
-            x = 10
-        elif fproduksi_sedang > 0:
-            x = 25
-        elif fproduksi_besar > 0:
-            x = 40
-        else:
-            x = 0
+    denominator = (fproduksi_tidak + fproduksi_kecil + fproduksi_sedang + fproduksi_besar)
+    x = numerator / denominator if denominator != 0 else 0
+
 
     return jsonify({
         "him_permintaan": {

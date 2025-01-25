@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 // import React from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -7,8 +8,6 @@ import { Bar } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const BarChart = ({barChart}) => {
-  // Data untuk grafik
- // Nilai produksi
   const labels= ['0', '10', '25', '40'];
 
   const categories = ['No Produksi', 'Kecil', 'Sedang', 'Besar']; // Label variabel di atas titik
@@ -31,7 +30,7 @@ const BarChart = ({barChart}) => {
     },
     scales: {
       x: {
-        grid: { display: false }, // Hilangkan grid pada sumbu X
+        grid: { display: true }, // Hilangkan grid pada sumbu X
         ticks: {
           callback: function (value, index) {
             return labels[index]; // Nilai di bawah batang
@@ -43,6 +42,7 @@ const BarChart = ({barChart}) => {
           text: 'Jumlah Produksi (Jmlh)',
           font: { size: 14 },
         },
+      
       },
       y: {
         grid: { display: true }, 
